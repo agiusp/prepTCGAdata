@@ -1,0 +1,49 @@
+Package: prepTCGAdata
+Type: Package
+Title: Prepare TCGA Data for the SJV and SJVC Apps
+Version: 1.8.1
+Authors@R:
+  person(given = "Phaedra",
+         family = "Agius",
+         role = c("aut", "cre"),
+         email = "phaedragius@gmail.com")
+Description: Downloads TCGA splice-junction data and clinical metadata via
+    recount3 and the GDC/cBioPortal APIs, annotates junctions against a
+    GENCODE reference, and prepares the metadata for overall-survival
+    analysis with the SJV and SJVC apps.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+Depends:
+    R (>= 4.5.3)
+Imports:
+    ConsensusTME,
+    data.table,
+    dplyr,
+    GenomicRanges,
+    GSEABase,
+    httr,
+    IRanges,
+    jsonlite,
+    Matrix,
+    recount3,
+    rvest,
+    S4Vectors,
+    stats,
+    SummarizedExperiment,
+    TCGAbiolinks,
+    tidyr,
+    utils,
+    xCell
+Remotes:
+    dviraran/xCell,
+    cansysbio/ConsensusTME
+Suggests:
+    BiocManager,
+    knitr,
+    rmarkdown,
+    rtracklayer,
+    survminer
+NeedsCompilation: no
+Config/roxygen2/version: 8.1.0
+LazyData: true
