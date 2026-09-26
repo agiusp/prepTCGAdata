@@ -64,7 +64,6 @@
 #' @importFrom GSEABase geneIds setName
 #' @export
 get_tcga_data<-function(ddir,cohort){
-
   start_time <- Sys.time()
 
   if(length(grep('TCGA',cohort))>0)
@@ -523,6 +522,21 @@ get_tcga_data<-function(ddir,cohort){
   kk<-union(kk,k)
   meta$Stage[-kk]<-NA
   
+  # meta$sample_id (set above from tcga.gdc_file_id) is a GDC file UUID, not
+  # a sample barcode, so it won't generally match njrrs's (junction_matrix's)
+  # column names - if it doesn't, look for a meta column whose values do
+  # cover every njrrs sample barcode and use that instead.
+  if(length(intersect(meta$sample_id,colnames(njrrs)))<ncol(njrrs)){
+    n<-unlist(lapply(1:ncol(meta),
+                     function(x) length(intersect(meta[,x],colnames(njrrs)))))
+    q<-which(n==ncol(njrrs))[1]
+    if(is.na(q)){
+      stop("get_tcga_data(", cohort, "): no meta column's values cover all ",
+           ncol(njrrs), " sample barcode(s) in njrrs/junction_matrix - ",
+           "cannot determine sample_id.", call. = FALSE)
+    }
+    meta$sample_id<-meta[,q]
+  }
   saveRDS(meta,file = paste0("TCGA_", cohort, "_sample_metadata.rds"))
   
   end_time <- Sys.time()
