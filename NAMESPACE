@@ -5,6 +5,7 @@ export(count_novel_sjs)
 export(count_novel_sjs_per_pathway)
 export(get_tcga_data)
 export(novel_junction_RRS)
+export(novel_junction_ratios)
 importFrom(GSEABase,
   geneIds,
   setName
@@ -16,6 +17,7 @@ importFrom(GenomicRanges,
 importFrom(IRanges,IRanges)
 importFrom(Matrix,
   Matrix,
+  colSums,
   sparseMatrix,
   t
 )

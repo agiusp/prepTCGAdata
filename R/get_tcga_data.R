@@ -27,7 +27,10 @@
 #' [count_novel_sjs()] tabulates novel-junction counts per gene and sample
 #' (`novel_junction_counts_per_gene.rds`), and [novel_junction_RRS()] scores
 #' each novel junction's relative read support against its gene's annotated
-#' junctions (`novel_junction_RRS_scores.rds`). All three steps iterate over
+#' junctions (`novel_junction_RRS_scores.rds`). [novel_junction_ratios()] then
+#' computes the fraction of expressed junctions that are novel, per gene
+#' (`novel_junction_ratios.rds`) and per sample (added to `sample_metadata.rds`
+#' as column `NJR`). The first three steps iterate over
 #' the full junction set and can take a while (minutes to tens of minutes,
 #' depending on cohort size).
 #'
@@ -58,9 +61,9 @@
 #' following files to `ddir` (each prefixed with `TCGA_<cohort>_`):
 #' `junction_counts.rds`, `junction_metadata.rds`, `sample_metadata.rds`,
 #' `novel_junction_counts_per_gene.rds`, `novel_junction_counts_per_pathway.rds`,
-#' and `novel_junction_RRS_scores.rds`.
+#' `novel_junction_RRS_scores.rds` and `novel_junction_ratios.rds`.
 #' @seealso [annotate_sj()], [count_novel_sjs()], [count_novel_sjs_per_pathway()],
-#'   [novel_junction_RRS()], [gencode_v29_genes]
+#'   [novel_junction_RRS()], [novel_junction_ratios()], [gencode_v29_genes]
 #' @importFrom GSEABase geneIds setName
 #' @export
 get_tcga_data<-function(ddir,cohort){
@@ -250,8 +253,15 @@ get_tcga_data<-function(ddir,cohort){
   
   
   # 8.1. Compute RRS scores
-  njrrs<-novel_junction_RRS (junction_matrix, junction_metadata)
+  njrrs<-novel_junction_RRS (junction_matrix, sjmeta)
   saveRDS(njrrs,file = paste0("TCGA_", cohort, "_novel_junction_RRS_scores.rds"))
+
+  # 8.2. Compute novel junction ratios: per gene (saved to file) and global
+  # (joined onto sample_metadata as column NJR below)
+  message("Computing novel junction ratios ...")
+  njr.gene<-novel_junction_ratios(junction_matrix, sjmeta, global=FALSE)
+  saveRDS(njr.gene,file = paste0("TCGA_", cohort, "_novel_junction_ratios.rds"))
+  njr<-novel_junction_ratios(junction_matrix, sjmeta, global=TRUE)
   
   message("--- Process Finished! All RNA junction profiles exported successfully. ---")
   
@@ -537,6 +547,7 @@ get_tcga_data<-function(ddir,cohort){
     }
     meta$sample_id<-meta[,q]
   }
+  meta$NJR<-njr$NJR[match(meta$sample_id,njr$sample_id)]
   saveRDS(meta,file = paste0("TCGA_", cohort, "_sample_metadata.rds"))
   
   end_time <- Sys.time()

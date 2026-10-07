@@ -29,7 +29,8 @@ prefixed `TCGA_<cohort>_`:
 | `novel_junction_counts_per_gene.rds` | Novel (unannotated) junction counts, rolled up per gene and sample |
 | `novel_junction_RRS_scores.rds` | Each novel junction's relative read support against its gene's annotated junctions — `X / (X + median annotated-junction support)`, so bounded to `[0, 1)` |
 | `novel_junction_counts_per_pathway.rds` | The per-gene novel-junction counts rolled up into xCell cell-type and (where available) ConsensusTME tumour-microenvironment gene-set scores |
-| `sample_metadata.rds` | recount3's per-sample columns joined with GDC overall-survival fields and cBioPortal MSI status/scores |
+| `novel_junction_ratios.rds` | Per gene and sample, the fraction of expressed junctions that are novel — `x / (x + y)`, with `x`/`y` the numbers of novel/annotated junctions with more than `n` (default 5) reads. Only genes with an annotated junction above `n` reads are reported; `NA` where a gene has none in that sample |
+| `sample_metadata.rds` | recount3's per-sample columns joined with GDC overall-survival fields and cBioPortal MSI status/scores, plus `NJR` — the same novel junction ratio computed across all junctions in the sample |
 
 The whole pipeline (junction annotation, novel-junction scoring, pathway
 roll-up) runs against the GENCODE release 29 gene models bundled with the

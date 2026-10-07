@@ -19,7 +19,7 @@ Invisibly returns \code{NULL}. Called for its side effect of writing the
 following files to \code{ddir} (each prefixed with \verb{TCGA_<cohort>_}):
 \code{junction_counts.rds}, \code{junction_metadata.rds}, \code{sample_metadata.rds},
 \code{novel_junction_counts_per_gene.rds}, \code{novel_junction_counts_per_pathway.rds},
-and \code{novel_junction_RRS_scores.rds}.
+\code{novel_junction_RRS_scores.rds} and \code{novel_junction_ratios.rds}.
 }
 \description{
 Downloads TCGA splice junction data (GENCODE v29) and meta data,
@@ -45,7 +45,10 @@ two further matrices, both restricted to novel (unannotated) junctions:
 \code{\link[=count_novel_sjs]{count_novel_sjs()}} tabulates novel-junction counts per gene and sample
 (\code{novel_junction_counts_per_gene.rds}), and \code{\link[=novel_junction_RRS]{novel_junction_RRS()}} scores
 each novel junction's relative read support against its gene's annotated
-junctions (\code{novel_junction_RRS_scores.rds}). All three steps iterate over
+junctions (\code{novel_junction_RRS_scores.rds}). \code{\link[=novel_junction_ratios]{novel_junction_ratios()}} then
+computes the fraction of expressed junctions that are novel, per gene
+(\code{novel_junction_ratios.rds}) and per sample (added to \code{sample_metadata.rds}
+as column \code{NJR}). The first three steps iterate over
 the full junction set and can take a while (minutes to tens of minutes,
 depending on cohort size).
 
@@ -75,5 +78,5 @@ tuned to the cohort at hand rather than fixed at download time.
 }
 \seealso{
 \code{\link[=annotate_sj]{annotate_sj()}}, \code{\link[=count_novel_sjs]{count_novel_sjs()}}, \code{\link[=count_novel_sjs_per_pathway]{count_novel_sjs_per_pathway()}},
-\code{\link[=novel_junction_RRS]{novel_junction_RRS()}}, \link{gencode_v29_genes}
+\code{\link[=novel_junction_RRS]{novel_junction_RRS()}}, \code{\link[=novel_junction_ratios]{novel_junction_ratios()}}, \link{gencode_v29_genes}
 }
