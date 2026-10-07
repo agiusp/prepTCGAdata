@@ -52,8 +52,16 @@ novel_junction_ratios <- function(JC, sjmeta, global=TRUE, n=5){
   ids<-strsplit(sjmeta$gencode_gene_id[q],',')
   nms<-strsplit(sjmeta$gencode_gene_name[q],',')
   len<-lengths(ids)
-  if(any(len!=lengths(nms)))
-    stop('Error in novel_junction_ratios function. `gencode_gene_id` and `gencode_gene_name` lists differ in length')
+  # junction metadata from older annotate_sj() versions de-duplicated the
+  # name list (e.g. two RF00019 genes), so ids and names no longer pair up;
+  # recover those names from the packaged GENCODE v29 gene models
+  bad<-which(len!=lengths(nms))
+  if(length(bad)>0){
+    warning(length(bad),' junction(s) have gene id/name lists of different length; ',
+            'taking their gene names from gencode_v29_genes')
+    gv29<-prepTCGAdata::gencode_v29_genes
+    nms[bad]<-lapply(ids[bad],function(v) gv29$gene_name[match(v,gv29$gene_id)])
+  }
   genes<-paste(unlist(nms),unlist(ids),sep=':')
   junc<-rep(q,len)
   ug<-unique(genes)

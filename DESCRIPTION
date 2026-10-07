@@ -1,7 +1,7 @@
 Package: prepTCGAdata
 Type: Package
 Title: Prepare TCGA Data for the SJV and SJVC Apps
-Version: 1.9.0
+Version: 1.9.1
 Authors@R:
   person(given = "Phaedra",
          family = "Agius",
